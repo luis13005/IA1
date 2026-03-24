@@ -1,98 +1,222 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  Alert,
+} from 'react-native';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import { Login } from '@/src/types/login';
+import { useState } from 'react';
 
-export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
+export default function TelaLogin() {
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleLogin = () => {
+        if(!email.trim() || !password.trim()){
+            Alert.alert('Atenção', 'Por favor, preencha todos os campos.');
+            return;
+        }
+
+        const login: Login = {email: email,password: password}
+
+        Alert.alert(`Login', 'Bem vindo, ${login.email}!`);
+    };
+
+    const handleEsqueceuSenha = () => {
+        Alert.alert('Recuperar Senha', 'Funcionalidade em breve!');
+    };
+
+    const handleCadastro = () => {
+        Alert.alert('Cadastro', 'Tela de cadastro em breve!');
+    };
+
+    return (
+        <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+        <View style={styles.conteudo}>
+
+            <View style={styles.logoContainer}>
+            <Image
+                source={{ uri: 'https://reactnative.dev/img/tiny_logo.png' }}
+                style={styles.logo}
+                resizeMode="contain"
             />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+            <Text style={styles.nomeApp}>MeuApp</Text>
+            </View>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+            <Text style={styles.subtitulo}>Faça login para continuar</Text>
+
+            <View style={styles.inputContainer}>
+            <Text style={styles.label}>E-mail</Text>
+            <TextInput
+                style={styles.input}
+                placeholder="seuemail@exemplo.com"
+                placeholderTextColor="#999"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
+                value={email}
+                onChangeText={setEmail}
+            />
+            </View>
+
+            <View style={styles.inputContainer}>
+            <Text style={styles.label}>Senha</Text>
+            <TextInput
+                style={styles.input}
+                placeholder="Digite sua senha"
+                placeholderTextColor="#999"
+                secureTextEntry={true}
+                value={password}
+                onChangeText={setPassword}
+            />
+            </View>
+
+            <TouchableOpacity
+            style={styles.esqueceuSenha}
+            onPress={handleEsqueceuSenha}
+            >
+            <Text style={styles.esqueceuSenhaTexto}>Esqueceu a senha?</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+            style={styles.botaoLogin}
+            onPress={handleLogin}
+            >
+            <Text style={styles.botaoLoginTexto}>Entrar</Text>
+            </TouchableOpacity>
+
+            <View style={styles.cadastroContainer}>
+            <Text style={styles.cadastroTexto}>Não tem uma conta?{' '}</Text>
+            <TouchableOpacity onPress={handleCadastro}>
+                <Text style={styles.cadastroLink}>Cadastre-se</Text>
+            </TouchableOpacity>
+            </View>
+
+        </View>
+        </KeyboardAvoidingView>
+    );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+
+  container: {
+    flex: 1,
+    backgroundColor: '#f8f9fa',
   },
-  stepContainer: {
-    gap: 8,
+
+  conteudo: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 32,
+  },
+
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 32,
+  },
+
+  logo: {
+    width: 80,
+    height: 80,
+  },
+
+  nomeApp: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#007AFF',
+    marginTop: 8,
+  },
+
+  titulo: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#1a1a1a',
+    textAlign: 'center',
     marginBottom: 8,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+
+  subtitulo: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 32,
+  },
+
+  inputContainer: {
+    marginBottom: 16,
+  },
+
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 6,
+  },
+
+  input: {
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontSize: 16,
+    color: '#333',
+  },
+
+  esqueceuSenha: {
+    alignSelf: 'flex-end',
+    marginBottom: 24,
+    marginTop: 4,
+  },
+
+  esqueceuSenhaTexto: {
+    color: '#007AFF',
+    fontSize: 14,
+  },
+
+  botaoLogin: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 16,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 24,
+    elevation: 3,
+    shadowColor: '#007AFF',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+
+  botaoLoginTexto: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+
+  cadastroContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+
+  cadastroTexto: {
+    color: '#666',
+    fontSize: 14,
+  },
+
+  cadastroLink: {
+    color: '#007AFF',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 });
